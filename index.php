@@ -19,6 +19,12 @@ $requestUri = $_SERVER['REQUEST_URI'];
 $path = parse_url($requestUri, PHP_URL_PATH);
 $path = rtrim($path, '/') ?: '/';
 
+// Redirect logged-in users from landing to dashboard
+if ($path === '/' && isLoggedIn()) {
+    header('Location: /dashboard');
+    exit;
+}
+
 // Simple router
 $routes = [
     '/' => 'pages/landing.php',
