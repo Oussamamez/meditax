@@ -1,6 +1,12 @@
 # MediTax Connect
 
 A modern SaaS platform connecting healthcare professionals (doctors, dentists, pharmacies) with certified accountants for seamless tax management and financial services.
+<img width="1262" height="810" alt="Capture d&#39;écran 2026-03-25 155947" src="https://github.com/user-attachments/assets/c6d230a0-f34f-4b81-95a4-a03c4191e4ca" />
+<img width="1287" height="805" alt="Capture d&#39;écran 2026-03-25 155957" src="https://github.com/user-attachments/assets/6fa87d78-c4c3-4c88-a16e-29b2e3958880" />
+<img width="1281" height="800" alt="Capture d&#39;écran 2026-03-25 160004" src="https://github.com/user-attachments/assets/f67d18ff-5c5f-430b-b3af-dd65d6571a34" />
+<img width="1282" height="823" alt="Capture d&#39;écran 2026-03-25 160012" src="https://github.com/user-attachments/assets/4b354d02-2044-4ef5-862d-8ddc50d6b0a1" />
+<img width="1273" height="827" alt="Capture d&#39;écran 2026-03-25 160021" src="https://github.com/user-attachments/assets/bb9ec867-251b-4a0d-b912-93685a28939b" />
+<img width="1254" height="818" alt="Capture d&#39;écran 2026-03-25 160036" src="https://github.com/user-attachments/assets/1fa31001-19f7-489b-9f97-52916d57f88f" />
 
 ## Features
 
