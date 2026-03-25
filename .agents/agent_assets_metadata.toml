@@ -1,0 +1,8 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "1xLt5W5zW-TmPHqmDcUDq"
+uri = "file://MediTax_Connect_Report.pdf"
+type = "pdf"
+title = "MediTax Connect — Platform Report (PDF)"
