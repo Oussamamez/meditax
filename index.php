@@ -112,6 +112,10 @@ switch ($requestUri) {
         require __DIR__ . '/pages/admin-commissions.php';
         break;
     
+    case '/report':
+        require __DIR__ . '/meditax_report.html';
+        break;
+    
     default:
         http_response_code(404);
         require __DIR__ . '/pages/404.php';

@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MediTax Connect — Platform Report</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; font-size: 14px; color: #1e293b; background: #fff; line-height: 1.6; }
+
+  /* Cover page */
+  .cover {
+    background: linear-gradient(135deg, #0284c7 0%, #0ea5e9 50%, #22c55e 100%);
+    color: white; min-height: 320px;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 60px 80px 40px; position: relative; overflow: hidden;
+  }
+  .cover::after {
+    content: ''; position: absolute; right: -60px; top: -60px;
+    width: 320px; height: 320px; border-radius: 50%;
+    background: rgba(255,255,255,0.08);
+  }
+  .cover::before {
+    content: ''; position: absolute; right: 60px; bottom: -80px;
+    width: 200px; height: 200px; border-radius: 50%;
+    background: rgba(255,255,255,0.06);
+  }
+  .cover-icon { font-size: 48px; margin-bottom: 16px; }
+  .cover h1 { font-size: 38px; font-weight: 800; letter-spacing: -0.5px; }
+  .cover .subtitle { font-size: 17px; opacity: 0.88; margin-top: 8px; }
+  .cover .meta { margin-top: 28px; font-size: 13px; opacity: 0.75; display: flex; gap: 32px; flex-wrap: wrap; }
+  .cover .meta span { display: flex; align-items: center; gap: 6px; }
+
+  /* Layout */
+  .container { max-width: 820px; margin: 0 auto; padding: 40px 60px 60px; }
+  @media print { .container { padding: 20px 40px 40px; } .cover { padding: 40px 60px 30px; } }
+
+  /* Section */
+  .section { margin-top: 44px; }
+  .section-title {
+    font-size: 11px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase;
+    color: #0284c7; border-bottom: 2px solid #e0f2fe; padding-bottom: 6px; margin-bottom: 18px;
+  }
+
+  /* Summary cards */
+  .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: 10px; }
+  @media (max-width: 600px) { .stat-grid { grid-template-columns: repeat(2, 1fr); } }
+  .stat-card {
+    background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 10px;
+    padding: 16px 14px; text-align: center;
+  }
+  .stat-card .val { font-size: 28px; font-weight: 800; color: #0284c7; }
+  .stat-card .lbl { font-size: 11px; color: #64748b; margin-top: 2px; }
+
+  /* Feature table */
+  table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+  th { background: #f8fafc; text-align: left; padding: 10px 12px; font-size: 12px; font-weight: 700; color: #64748b; border-bottom: 2px solid #e2e8f0; }
+  td { padding: 10px 12px; border-bottom: 1px solid #f1f5f9; vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #f8fafc; }
+
+  /* Badges */
+  .badge {
+    display: inline-block; padding: 2px 9px; border-radius: 20px;
+    font-size: 11px; font-weight: 600;
+  }
+  .badge-blue  { background: #dbeafe; color: #1d4ed8; }
+  .badge-green { background: #dcfce7; color: #15803d; }
+  .badge-purple{ background: #ede9fe; color: #6d28d9; }
+  .badge-orange{ background: #ffedd5; color: #c2410c; }
+  .badge-gray  { background: #f1f5f9; color: #475569; }
+
+  /* Check list */
+  ul.check { list-style: none; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  ul.check li { display: flex; align-items: flex-start; gap: 8px; font-size: 13px; }
+  ul.check li::before { content: '✓'; color: #22c55e; font-weight: 700; flex-shrink: 0; }
+  @media (max-width: 500px) { ul.check { grid-template-columns: 1fr; } }
+
+  /* Role sections */
+  .role-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 550px) { .role-grid { grid-template-columns: 1fr; } }
+  .role-card { border: 1px solid #e2e8f0; border-radius: 10px; padding: 16px; }
+  .role-card h4 { font-size: 14px; font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+  .role-card ul { list-style: none; padding: 0; }
+  .role-card ul li { font-size: 12.5px; color: #475569; padding: 4px 0; border-bottom: 1px solid #f1f5f9; display: flex; align-items: center; gap: 6px; }
+  .role-card ul li:last-child { border-bottom: none; }
+  .role-card ul li::before { content: '→'; color: #0ea5e9; font-weight: 700; }
+
+  /* Pages list */
+  .pages-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  @media (max-width: 500px) { .pages-grid { grid-template-columns: 1fr; } }
+  .page-row { display: flex; align-items: center; gap: 8px; padding: 7px 10px; background: #f8fafc; border-radius: 7px; font-size: 12.5px; }
+  .page-row code { font-size: 11px; color: #0284c7; background: #e0f2fe; padding: 1px 6px; border-radius: 4px; font-family: monospace; }
+
+  /* Tech stack */
+  .tech-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  @media (max-width: 500px) { .tech-grid { grid-template-columns: 1fr 1fr; } }
+  .tech-card { border: 1px solid #e2e8f0; border-radius: 8px; padding: 14px 12px; }
+  .tech-card .icon { font-size: 20px; margin-bottom: 6px; }
+  .tech-card .name { font-size: 13px; font-weight: 700; color: #0f172a; }
+  .tech-card .desc { font-size: 11px; color: #64748b; margin-top: 2px; }
+
+  /* Pricing */
+  .price-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .price-card { border-radius: 10px; padding: 20px; }
+  .price-card.free { background: #f0fdf4; border: 1px solid #bbf7d0; }
+  .price-card.paid { background: #f0f9ff; border: 2px solid #0284c7; }
+  .price-card .amount { font-size: 30px; font-weight: 800; }
+  .price-card .amount span { font-size: 14px; font-weight: 400; color: #64748b; }
+  .price-card p { font-size: 12px; color: #64748b; margin-top: 4px; }
+  .price-card ul { margin-top: 12px; list-style: none; padding: 0; }
+  .price-card ul li { font-size: 12.5px; color: #475569; padding: 4px 0; display: flex; gap: 6px; align-items: flex-start; }
+  .price-card ul li::before { content: '✓'; color: #22c55e; font-weight: 700; flex-shrink: 0; }
+
+  /* Recommendations */
+  .rec-list { list-style: none; padding: 0; }
+  .rec-list li { display: flex; gap: 12px; align-items: flex-start; padding: 12px 0; border-bottom: 1px solid #f1f5f9; }
+  .rec-list li:last-child { border-bottom: none; }
+  .rec-num { width: 26px; height: 26px; border-radius: 50%; background: linear-gradient(135deg,#0284c7,#22c55e); color: white; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .rec-text strong { display: block; font-size: 13.5px; color: #0f172a; }
+  .rec-text span { font-size: 12.5px; color: #64748b; }
+
+  /* Footer */
+  .report-footer { margin-top: 50px; padding-top: 16px; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; font-size: 11px; color: #94a3b8; }
+  .print-btn { position: fixed; bottom: 24px; right: 24px; background: linear-gradient(135deg,#0284c7,#22c55e); color: white; border: none; padding: 12px 20px; border-radius: 30px; cursor: pointer; font-size: 13px; font-weight: 600; box-shadow: 0 4px 16px rgba(2,132,199,0.35); display: flex; align-items: center; gap: 8px; }
+  .print-btn:hover { opacity: 0.92; }
+  @media print { .print-btn { display: none; } }
+</style>
+</head>
+<body>
+
+<!-- Cover -->
+<div class="cover">
+  <div class="cover-icon">🏥</div>
+  <h1>MediTax Connect</h1>
+  <div class="subtitle">Platform Overview &amp; Technical Report</div>
+  <div class="meta">
+    <span>📅 Generated: March 25, 2026</span>
+    <span>🔖 Version: 1.0 (MVP)</span>
+    <span>🌐 Status: Live &amp; Running</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- Executive Summary -->
+  <div class="section">
+    <div class="section-title">Executive Summary</div>
+    <p style="color:#475569; font-size:13.5px; line-height:1.8;">
+      MediTax Connect is a SaaS platform that bridges the gap between healthcare professionals and certified accountants.
+      The platform enables doctors, dentists, and pharmacies to upload financial documents, track income and expenses,
+      and connect with verified accountants — all in one secure, role-based environment. The system supports three
+      distinct user types: healthcare professionals (free access), accountants ($80/month subscription),
+      and platform administrators.
+    </p>
+  </div>
+
+  <!-- Platform Stats -->
+  <div class="section">
+    <div class="section-title">Platform Statistics (Current)</div>
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="val">8</div>
+        <div class="lbl">Total Users</div>
+      </div>
+      <div class="stat-card">
+        <div class="val">3</div>
+        <div class="lbl">Active Subscriptions</div>
+      </div>
+      <div class="stat-card">
+        <div class="val">2</div>
+        <div class="lbl">Active Contracts</div>
+      </div>
+      <div class="stat-card">
+        <div class="val">5</div>
+        <div class="lbl">User Roles</div>
+      </div>
+    </div>
+
+    <table style="margin-top:20px;">
+      <thead>
+        <tr>
+          <th>Role</th>
+          <th>Count</th>
+          <th>Access Level</th>
+          <th>Subscription</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="badge badge-purple">👩‍💼 Accountant</span></td>
+          <td><strong>3</strong></td>
+          <td>Client documents, tax reports, financials</td>
+          <td><span class="badge badge-green">$80/month</span></td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-blue">🩺 Doctor</span></td>
+          <td><strong>2</strong></td>
+          <td>Own documents, financials, accountant search</td>
+          <td><span class="badge badge-green">Free</span></td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-blue">🦷 Dentist</span></td>
+          <td><strong>1</strong></td>
+          <td>Own documents, financials, accountant search</td>
+          <td><span class="badge badge-green">Free</span></td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-blue">💊 Pharmacy</span></td>
+          <td><strong>1</strong></td>
+          <td>Own documents, financials, accountant search</td>
+          <td><span class="badge badge-green">Free</span></td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-orange">⚙️ Admin</span></td>
+          <td><strong>1</strong></td>
+          <td>Full platform management &amp; analytics</td>
+          <td><span class="badge badge-gray">N/A</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Features by Role -->
+  <div class="section">
+    <div class="section-title">Features by User Role</div>
+    <div class="role-grid">
+      <div class="role-card">
+        <h4>🏥 Healthcare Professionals</h4>
+        <ul>
+          <li>Financial dashboard (income, expenses, profit, tax)</li>
+          <li>Document upload (PDF, images, Excel)</li>
+          <li>Find &amp; select verified accountants</li>
+          <li>View assigned accountant details</li>
+          <li>Financial reports &amp; tax estimates</li>
+          <li>AI-generated financial analysis</li>
+          <li>Profile management</li>
+        </ul>
+      </div>
+      <div class="role-card">
+        <h4>📊 Accountants</h4>
+        <ul>
+          <li>Client list management</li>
+          <li>Access to client financial documents</li>
+          <li>Tax report creation per client</li>
+          <li>Subscription management ($80/mo)</li>
+          <li>Verified badge system</li>
+          <li>AI financial report generation for clients</li>
+          <li>Profile &amp; credential management</li>
+        </ul>
+      </div>
+      <div class="role-card">
+        <h4>⚙️ Administrators</h4>
+        <ul>
+          <li>User management (view, verify, edit)</li>
+          <li>Commission tracking (12% per contract)</li>
+          <li>Platform analytics dashboard</li>
+          <li>Subscription monitoring</li>
+          <li>Active contract overview</li>
+        </ul>
+      </div>
+      <div class="role-card">
+        <h4>🤖 Platform-Wide</h4>
+        <ul>
+          <li>Dark / light mode toggle</li>
+          <li>Built-in support chatbot</li>
+          <li>CSRF token protection</li>
+          <li>Role-based access control</li>
+          <li>Flash message notifications</li>
+          <li>Responsive mobile layout</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pages & Routes -->
+  <div class="section">
+    <div class="section-title">Pages &amp; Routes (14 total)</div>
+    <div class="pages-grid">
+      <div class="page-row"><code>/</code> Landing / Homepage</div>
+      <div class="page-row"><code>/login</code> User Login</div>
+      <div class="page-row"><code>/register</code> Registration</div>
+      <div class="page-row"><code>/dashboard</code> Role Dashboard</div>
+      <div class="page-row"><code>/documents</code> Document Manager</div>
+      <div class="page-row"><code>/accountants</code> Find Accountant</div>
+      <div class="page-row"><code>/clients</code> Client Management</div>
+      <div class="page-row"><code>/subscription</code> Subscription</div>
+      <div class="page-row"><code>/reports</code> Financial Reports</div>
+      <div class="page-row"><code>/ai-reports</code> AI Reports</div>
+      <div class="page-row"><code>/profile</code> Profile Settings</div>
+      <div class="page-row"><code>/admin</code> Admin Dashboard</div>
+      <div class="page-row"><code>/admin/users</code> User Management</div>
+      <div class="page-row"><code>/admin/commissions</code> Commission Tracking</div>
+    </div>
+  </div>
+
+  <!-- Tech Stack -->
+  <div class="section">
+    <div class="section-title">Technology Stack</div>
+    <div class="tech-grid">
+      <div class="tech-card">
+        <div class="icon">🐘</div>
+        <div class="name">PHP 8.2</div>
+        <div class="desc">Pure PHP backend, no framework. Front controller pattern via index.php</div>
+      </div>
+      <div class="tech-card">
+        <div class="icon">🗄️</div>
+        <div class="name">PostgreSQL</div>
+        <div class="desc">Replit-managed PostgreSQL database. Connected via PDO with prepared statements</div>
+      </div>
+      <div class="tech-card">
+        <div class="icon">🎨</div>
+        <div class="name">Tailwind CSS</div>
+        <div class="desc">Utility-first CSS via CDN. Dark mode enabled with class strategy</div>
+      </div>
+      <div class="tech-card">
+        <div class="icon">⚡</div>
+        <div class="name">Vanilla JS</div>
+        <div class="desc">No framework. Handles UI interactions, dark mode, chatbot, and AJAX</div>
+      </div>
+      <div class="tech-card">
+        <div class="icon">🔤</div>
+        <div class="name">Font Awesome 6</div>
+        <div class="desc">Icon library for all UI icons across the platform</div>
+      </div>
+      <div class="tech-card">
+        <div class="icon">🔒</div>
+        <div class="name">PHP Sessions</div>
+        <div class="desc">Session-based auth with bcrypt password hashing and CSRF tokens</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Database Schema -->
+  <div class="section">
+    <div class="section-title">Database Schema (9 Tables)</div>
+    <table>
+      <thead>
+        <tr>
+          <th>Table</th>
+          <th>Purpose</th>
+          <th>Key Fields</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code style="color:#0284c7">users</code></td>
+          <td>All platform users across all roles</td>
+          <td>id, email, password, role, is_verified, business_name</td>
+        </tr>
+        <tr>
+          <td><code style="color:#0284c7">subscriptions</code></td>
+          <td>Accountant subscription tracking</td>
+          <td>user_id, status, amount, start_date, end_date</td>
+        </tr>
+        <tr>
+          <td><code style="color:#0284c7">accountant_clients</code></td>
+          <td>Accountant–client relationships</td>
+          <td>accountant_id, client_id, status, year</td>
+        </tr>
+        <tr>
+          <td><code style="color:#0284c7">documents</code></td>
+          <td>Uploaded financial documents</td>
+          <td>user_id, filename, category, file_type, year</td>
+        </tr>
+        <tr>
+          <td><code style="color:#0284c7">financial_records</code></td>
+          <td>Income, expenses, profit &amp; tax per year</td>
+          <td>user_id, year, total_income, total_expenses, estimated_tax</td>
+        </tr>
+        <tr>
+          <td><code style="color:#0284c7">commissions</code></td>
+          <td>Platform commission tracking (12%)</td>
+          <td>accountant_id, client_id, amount, commission_amount</td>
+        </tr>
+        <tr>
+          <td><code style="color:#0284c7">tax_reports</code></td>
+          <td>Accountant-generated tax reports</td>
+          <td>client_id, accountant_id, year, tax_liability, status</td>
+        </tr>
+        <tr>
+          <td><code style="color:#0284c7">ai_financial_reports</code></td>
+          <td>AI-generated financial analysis reports</td>
+          <td>user_id, year, title, summary, key_metrics, recommendations</td>
+        </tr>
+        <tr>
+          <td><code style="color:#0284c7">messages</code></td>
+          <td>Platform messaging between users</td>
+          <td>sender_id, receiver_id, subject, message, is_read</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Security -->
+  <div class="section">
+    <div class="section-title">Security Features</div>
+    <ul class="check">
+      <li>Password hashing with bcrypt (PASSWORD_DEFAULT)</li>
+      <li>CSRF token generation &amp; validation</li>
+      <li>PHP Session-based authentication</li>
+      <li>Role-based access control (RBAC)</li>
+      <li>Input sanitization via htmlspecialchars</li>
+      <li>PDO prepared statements (SQL injection prevention)</li>
+      <li>File type validation on uploads</li>
+      <li>HIPAA-conscious data handling</li>
+    </ul>
+  </div>
+
+  <!-- Pricing -->
+  <div class="section">
+    <div class="section-title">Pricing Model</div>
+    <div class="price-grid">
+      <div class="price-card free">
+        <div class="amount" style="color:#16a34a">Free <span>forever</span></div>
+        <p>Healthcare Professionals (doctors, dentists, pharmacies)</p>
+        <ul>
+          <li>Unlimited document uploads</li>
+          <li>Access to verified accountants</li>
+          <li>Tax estimates &amp; reports</li>
+          <li>AI financial analysis</li>
+          <li>Secure document storage</li>
+        </ul>
+      </div>
+      <div class="price-card paid">
+        <div class="amount" style="color:#0284c7">$80 <span>/ month</span></div>
+        <p>Accountants — Unlimited clients, no per-client fees</p>
+        <ul>
+          <li>Unlimited client management</li>
+          <li>Client document access</li>
+          <li>Tax report generation</li>
+          <li>Verified badge</li>
+          <li>12% commission on contracts</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent Additions -->
+  <div class="section">
+    <div class="section-title">Recently Implemented Features</div>
+    <table>
+      <thead>
+        <tr><th>Feature</th><th>Description</th><th>Status</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>🌙 Night Mode</strong></td>
+          <td>Full dark/light theme toggle persisted in localStorage. Available on all pages via nav button.</td>
+          <td><span class="badge badge-green">Live</span></td>
+        </tr>
+        <tr>
+          <td><strong>🤖 Support Chatbot</strong></td>
+          <td>Floating assistant widget with 15-topic knowledge base. No API key required — runs entirely client-side.</td>
+          <td><span class="badge badge-green">Live</span></td>
+        </tr>
+        <tr>
+          <td><strong>🧠 AI Financial Reports</strong></td>
+          <td>Auto-generated financial analysis with profit margins, tax breakdowns, and actionable recommendations.</td>
+          <td><span class="badge badge-green">Live</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Recommendations -->
+  <div class="section">
+    <div class="section-title">Recommendations for Future Development</div>
+    <ul class="rec-list">
+      <li>
+        <div class="rec-num">1</div>
+        <div class="rec-text">
+          <strong>Payment Gateway Integration</strong>
+          <span>Integrate Stripe or PayPal to handle real accountant subscriptions and commission payments instead of simulated transactions.</span>
+        </div>
+      </li>
+      <li>
+        <div class="rec-num">2</div>
+        <div class="rec-text">
+          <strong>Cloud Document Storage</strong>
+          <span>Move file uploads from local filesystem to AWS S3 or similar cloud storage for scalability, reliability, and redundancy.</span>
+        </div>
+      </li>
+      <li>
+        <div class="rec-num">3</div>
+        <div class="rec-text">
+          <strong>Real AI Chatbot Upgrade</strong>
+          <span>Connect the support chatbot to OpenAI or a similar LLM API to handle open-ended questions and provide dynamic, context-aware responses.</span>
+        </div>
+      </li>
+      <li>
+        <div class="rec-num">4</div>
+        <div class="rec-text">
+          <strong>Email Notifications</strong>
+          <span>Add transactional emails for new client connections, document uploads, report completion, and subscription renewals (e.g. via SendGrid or Mailgun).</span>
+        </div>
+      </li>
+      <li>
+        <div class="rec-num">5</div>
+        <div class="rec-text">
+          <strong>In-App Messaging</strong>
+          <span>Activate the existing messages table to build a real-time messaging system between clients and accountants.</span>
+        </div>
+      </li>
+      <li>
+        <div class="rec-num">6</div>
+        <div class="rec-text">
+          <strong>Password Reset Flow</strong>
+          <span>Implement a forgot-password email flow to allow users to securely reset credentials without contacting support.</span>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Footer -->
+  <div class="report-footer">
+    <span>MediTax Connect — Platform Report &mdash; March 25, 2026</span>
+    <span>Confidential &bull; MVP v1.0</span>
+  </div>
+
+</div>
+
+<button class="print-btn" onclick="window.print()">
+  🖨️ Print / Save as PDF
+</button>
+
+</body>
+</html>
