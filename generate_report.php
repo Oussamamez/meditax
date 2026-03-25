@@ -39,14 +39,6 @@ class MediTaxPDF extends FPDF {
         $this->SetFont('Helvetica','',14);
         $this->SetXY(20, 35);
         $this->Cell(0,8,$subtitle,0,1,'L');
-        // Meta info
-        $this->SetFont('Helvetica','',10);
-        $this->SetXY(20, 52);
-        $this->Cell(60,6,'Generated: March 25, 2026',0,0,'L');
-        $this->SetX(80);
-        $this->Cell(50,6,'Version: 1.0 (MVP)',0,0,'L');
-        $this->SetX(130);
-        $this->Cell(60,6,'Status: Live & Running',0,0,'L');
         $this->SetY(96);
         $this->SetTextColor(30,30,30);
     }
