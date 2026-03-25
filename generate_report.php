@@ -18,8 +18,6 @@ class MediTaxPDF extends FPDF {
         $this->SetY(-14);
         $this->SetFont('Helvetica','',8);
         $this->SetTextColor(150,150,150);
-        $this->Cell(0,5,'MediTax Connect  |  Platform Report  |  March 25, 2026',0,0,'C');
-        $this->Ln(4);
         $this->Cell(0,5,'Page '.$this->PageNo().'/{nb}',0,0,'C');
     }
 
