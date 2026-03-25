@@ -10,7 +10,7 @@
                 </a>
             </div>
             
-            <div class="hidden md:flex items-center space-x-8">
+            <div class="hidden md:flex items-center space-x-6">
                 <?php if (!isLoggedIn()): ?>
                     <a href="/#how-it-works" class="text-gray-600 hover:text-primary-600 transition">How It Works</a>
                     <a href="/#pricing" class="text-gray-600 hover:text-primary-600 transition">Pricing</a>
@@ -37,10 +37,21 @@
                         <a href="/logout" class="bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition">Logout</a>
                     </div>
                 <?php endif; ?>
+
+                <!-- Dark mode toggle -->
+                <button id="dark-toggle" onclick="toggleDarkMode()"
+                    class="w-9 h-9 flex items-center justify-center rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-gray-900 transition"
+                    title="Toggle dark mode" aria-label="Toggle dark mode">
+                    <i id="dark-icon" class="fas fa-moon text-sm"></i>
+                </button>
             </div>
             
             <!-- Mobile menu button -->
-            <div class="md:hidden flex items-center">
+            <div class="md:hidden flex items-center space-x-2">
+                <button id="dark-toggle-mobile" onclick="toggleDarkMode()"
+                    class="w-9 h-9 flex items-center justify-center rounded-lg bg-gray-100 text-gray-600 transition">
+                    <i class="fas fa-moon text-sm"></i>
+                </button>
                 <button onclick="toggleMobileMenu()" class="text-gray-600 hover:text-primary-600">
                     <i class="fas fa-bars text-xl"></i>
                 </button>
@@ -49,7 +60,7 @@
     </div>
     
     <!-- Mobile menu -->
-    <div id="mobile-menu" class="hidden md:hidden bg-white border-t">
+    <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-100">
         <div class="px-4 py-3 space-y-2">
             <?php if (!isLoggedIn()): ?>
                 <a href="/#how-it-works" class="block py-2 text-gray-600">How It Works</a>
@@ -68,4 +79,27 @@
 function toggleMobileMenu() {
     document.getElementById('mobile-menu').classList.toggle('hidden');
 }
+
+function toggleDarkMode() {
+    const html = document.documentElement;
+    const isDark = html.classList.toggle('dark');
+    localStorage.setItem('meditax-theme', isDark ? 'dark' : 'light');
+    updateDarkIcon(isDark);
+}
+
+function updateDarkIcon(isDark) {
+    document.querySelectorAll('#dark-toggle i, #dark-toggle-mobile i').forEach(function(icon) {
+        if (isDark) {
+            icon.className = 'fas fa-sun text-sm text-yellow-400';
+        } else {
+            icon.className = 'fas fa-moon text-sm';
+        }
+    });
+}
+
+// Set correct icon on load
+(function() {
+    const isDark = document.documentElement.classList.contains('dark');
+    updateDarkIcon(isDark);
+})();
 </script>

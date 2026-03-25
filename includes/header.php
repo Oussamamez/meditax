@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
+            darkMode: 'class',
             theme: {
                 extend: {
                     colors: {
@@ -43,9 +44,60 @@
     <style>
         .gradient-bg { background: linear-gradient(135deg, #0284c7 0%, #0ea5e9 50%, #22c55e 100%); }
         .gradient-text { background: linear-gradient(135deg, #0284c7, #22c55e); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+        /* ── Dark mode overrides ──────────────────────────────────── */
+        html.dark body { background-color: #0f172a; color: #e2e8f0; }
+
+        html.dark .bg-white       { background-color: #1e293b !important; }
+        html.dark .bg-gray-50     { background-color: #0f172a !important; }
+        html.dark .bg-gray-100    { background-color: #1e293b !important; }
+        html.dark .bg-gray-200    { background-color: #334155 !important; }
+
+        html.dark .text-gray-900  { color: #f1f5f9 !important; }
+        html.dark .text-gray-800  { color: #e2e8f0 !important; }
+        html.dark .text-gray-700  { color: #cbd5e1 !important; }
+        html.dark .text-gray-600  { color: #94a3b8 !important; }
+        html.dark .text-gray-500  { color: #64748b !important; }
+        html.dark .text-gray-400  { color: #475569 !important; }
+
+        html.dark .border-gray-100 { border-color: #334155 !important; }
+        html.dark .border-gray-200 { border-color: #334155 !important; }
+        html.dark .border-b        { border-color: #334155 !important; }
+
+        html.dark nav.bg-white     { background-color: #1e293b !important; }
+        html.dark .shadow-sm       { box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.4) !important; }
+
+        html.dark .hover\:bg-gray-50:hover   { background-color: #334155 !important; }
+        html.dark .hover\:bg-gray-100:hover  { background-color: #334155 !important; }
+        html.dark .hover\:bg-gray-200:hover  { background-color: #475569 !important; }
+
+        html.dark table thead tr   { border-color: #334155 !important; }
+        html.dark table tbody tr   { border-color: #334155 !important; }
+        html.dark table tr.hover\:bg-gray-50:hover { background-color: #334155 !important; }
+
+        html.dark .bg-yellow-50    { background-color: #1c1a00 !important; }
+        html.dark .bg-green-100    { background-color: #052e16 !important; }
+        html.dark .bg-red-100      { background-color: #2d0a0a !important; }
+        html.dark .bg-blue-100     { background-color: #0c1a2e !important; }
+        html.dark .bg-purple-100   { background-color: #1e0a2e !important; }
+        html.dark .bg-primary-100  { background-color: #0c1a2e !important; }
+        html.dark .bg-accent-100   { background-color: #052e16 !important; }
+
+        /* Dark mode toggle button animation */
+        #dark-toggle { transition: transform 0.2s ease; }
+        #dark-toggle:hover { transform: rotate(15deg); }
     </style>
+    <script>
+        // Apply saved theme immediately to avoid flash
+        (function() {
+            const saved = localStorage.getItem('meditax-theme');
+            if (saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+            }
+        })();
+    </script>
 </head>
-<body class="bg-gray-50 min-h-screen">
+<body class="bg-gray-50 min-h-screen transition-colors duration-200">
 <?php $flash = getFlashMessage(); ?>
 <?php if ($flash): ?>
 <div id="flash-message" class="fixed top-4 right-4 z-50 max-w-md">
