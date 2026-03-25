@@ -1,14 +1,14 @@
 <?php
-// Database connection using PostgreSQL
+// Database connection using MySQL
 function getDBConnection() {
-    $host = getenv('PGHOST');
-    $port = getenv('PGPORT');
-    $dbname = getenv('PGDATABASE');
-    $user = getenv('PGUSER');
-    $password = getenv('PGPASSWORD');
+    $host = getenv('PGHOST') ?: 'localhost';
+    $port = getenv('PGPORT') ?: '3306';
+    $dbname = getenv('PGDATABASE') ?: 'meditax';
+    $user = getenv('PGUSER') ?: 'root';
+    $password = getenv('PGPASSWORD') ?: '';
     
     try {
-        $dsn = "pgsql:host=$host;port=$port;dbname=$dbname";
+        $dsn = "mysql:host=$host;port=$port;dbname=$dbname;charset=utf8mb4";
         $pdo = new PDO($dsn, $user, $password, [
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
@@ -149,6 +149,41 @@ function initializeDatabase() {
             subject VARCHAR(255),
             message TEXT NOT NULL,
             is_read BOOLEAN DEFAULT FALSE,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+    ");
+    
+    // AI-Generated Financial Reports
+    $pdo->exec("
+        CREATE TABLE IF NOT EXISTS ai_financial_reports (
+            id SERIAL PRIMARY KEY,
+            user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+            accountant_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+            year INTEGER NOT NULL,
+            report_type VARCHAR(100) NOT NULL,
+            title VARCHAR(255) NOT NULL,
+            summary TEXT NOT NULL,
+            detailed_analysis TEXT,
+            recommendations TEXT,
+            key_metrics JSONB,
+            charts_data JSONB,
+            status VARCHAR(50) DEFAULT 'draft' CHECK (status IN ('draft', 'generated', 'reviewed', 'approved', 'archived')),
+            ai_model VARCHAR(100),
+            generation_method VARCHAR(50) CHECK (generation_method IN ('automated', 'manual_review', 'template')),
+            created_by INTEGER REFERENCES users(id) ON DELETE SET NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+    ");
+    
+    // AI Report Versions (for tracking changes)
+    $pdo->exec("
+        CREATE TABLE IF NOT EXISTS ai_report_versions (
+            id SERIAL PRIMARY KEY,
+            report_id INTEGER REFERENCES ai_financial_reports(id) ON DELETE CASCADE,
+            version_number INTEGER NOT NULL,
+            content TEXT NOT NULL,
+            summary TEXT,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
     ");

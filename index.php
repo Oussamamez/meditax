@@ -37,6 +37,7 @@ $routes = [
     '/accountants' => 'pages/accountants.php',
     '/clients' => 'pages/clients.php',
     '/reports' => 'pages/reports.php',
+    '/ai-reports' => 'pages/ai-reports.php',
     '/subscription' => 'pages/subscription.php',
     '/admin' => 'pages/admin.php',
     '/admin/users' => 'pages/admin-users.php',
@@ -55,6 +56,7 @@ $apiRoutes = [
     '/api/subscription/activate' => 'api/subscription.php',
     '/api/admin/verify-user' => 'api/admin.php',
     '/api/admin/update-user' => 'api/admin.php',
+    '/api/ai-reports.php' => 'api/ai-reports.php',
 ];
 
 // Check for API routes first
